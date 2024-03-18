@@ -23,7 +23,6 @@ class VerticaFilter extends BaseFilter {
     if (this.definition().type === 'boolean') {
       return 'CAST(? AS BOOLEAN)';
     } else if (this.measure || this.definition().type === 'number') {
-      // TODO here can be measure type of string actually
       return 'CAST(? AS DOUBLE)';
     }
 
@@ -37,9 +36,7 @@ class VerticaQuery extends BaseQuery {
   }
 
   convertTz(field) {
-    const targetTZ = moment().tz(this.timezone).format('Z');
-
-    return `${field} AT TIMEZONE ${targetTZ}`;
+    return `${field} AT TIMEZONE '${this.timezone}'`;
   }
 
   timeStampCast(value) {
@@ -51,7 +48,7 @@ class VerticaQuery extends BaseQuery {
   }
 
   dateTimeCast(value) {
-    return `TO_TIMESTAMP(${value})`;
+    return `${value}::TIMESTAMP`;
   }
 
   timeGroupedColumn(granularity, dimension) {
@@ -64,10 +61,10 @@ class VerticaQuery extends BaseQuery {
 
   seriesSql(timeDimension) {
     const values = timeDimension.timeSeries().map(
-      ([from, to]) => `select '${from}' f, '${to}' t`
+      ([from, to]) => `SELECT '${from}' f, '${to}' t`
     ).join(' UNION ALL ');
 
-    return `SELECT TIMESTAMP(dates.f) date_from, TIMESTAMP(dates.t) date_to FROM (${values}) AS dates`;
+    return `SELECT dates.f::TIMESTAMP date_from, dates.t::TIMESTAMP date_to FROM (${values}) AS dates`;
   }
 
   concatStringsSql(strings) {
