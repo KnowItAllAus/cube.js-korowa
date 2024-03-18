@@ -13,7 +13,6 @@ export class VerticaDBRunner extends DbRunnerAbstract {
 
     const container = new GenericContainer(`vertica/vertica-ce:${version}`)
       .withEnv('VERTICA_DB_NAME', 'test')
-      // .withEnv('VERTICA_MEMDEBUG', '2') // Required for ARM architecture
       .withExposedPorts(5433)
       .withStartupTimeout(60 * 1000)
       .withWaitStrategy(new LogWaitStrategy("Node Status: v_test_node0001: (UP)"));
