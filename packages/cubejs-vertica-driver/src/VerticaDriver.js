@@ -1,6 +1,6 @@
 const { Pool } = require('vertica-nodejs');
 const { BaseDriver } = require('@cubejs-backend/query-orchestrator');
-const VerticaQuery = require('./vertica-query');
+const VerticaQuery = require('./VerticaQuery');
 
 const defaultGenericType = 'text';
 const VerticaTypeToGenericType = {
